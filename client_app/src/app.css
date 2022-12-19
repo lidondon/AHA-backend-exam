@@ -1,0 +1,17 @@
+
+.background {
+    background: url('./static_files/background.jpg');
+    min-height: 100vh;
+}
+
+.text {
+    font-size: 24px;
+    color: lightblue;
+    font-family: "Apple LiGothic Medium";
+}
+
+.sub-page {
+    margin-top: 20px;
+    min-height: 84vh;
+    /* background: rgba(200, 200, 200, 0.5); */
+}

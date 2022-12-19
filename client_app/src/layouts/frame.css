@@ -1,0 +1,43 @@
+.half-transparent {
+    background: rgba(255, 130, 71, 0.3);
+}
+
+.menu {
+    background: rgba(0, 0, 0, 0);
+    font-size: 20px; 
+}
+
+.icon {
+    font-size: 20px;
+}
+
+a {
+    font-size: 16px; 
+}
+
+span {
+    font-size: 16px;
+}
+
+.login {
+    margin-left: 10px;
+}
+
+.hello {
+    color: brown;
+}
+
+.menu-item {
+    font-size: 20px;
+}
+
+.menu-item:hover {
+    color: grey;
+    font-weight: bolder;
+}
+
+.menu-item-selected {
+    color: grey;
+    font-weight: bolder;
+    text-shadow: 1px 1px white, -1px -1px #444
+}

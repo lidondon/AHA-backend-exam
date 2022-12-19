@@ -1,0 +1,49 @@
+{
+  "name": "restful_api_start_kit",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "repository": "",
+  "author": "DON DON LI <lidon720608@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build:prod": "webpack -p",
+    "swagger-autogen": "node swagger.js",
+    "watch": "webpack --watch",
+    "start": "nodemon dist/index.bundle.js"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.2",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
+    "eslint": "^4.12.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.6",
+    "express-validation": "^4.1.0",
+    "handlebars-loader": "^1.7.3",
+    "http-status": "^1.5.3",
+    "jade": "^1.11.0",
+    "joi": "^13.0.2",
+    "js-sha1": "^0.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.4",
+    "morgan": "^1.9.0",
+    "mysql": "^2.18.1",
+    "swagger-autogen": "^2.22.0",
+    "swagger-ui-express": "^4.6.0",
+    "webpack": "^3.9.1",
+    "webpack-node-externals": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/mysql": "^2.15.21"
+  }
+}
