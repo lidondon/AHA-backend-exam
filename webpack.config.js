@@ -8,7 +8,7 @@ module.exports = {
         index: './src/index.js'
     },
     output: {
-        path: path.join(__dirname, 'dist'),
+        path: path.join(__dirname, 'output'),
         filename: '[name].bundle.js',
         libraryTarget: 'commonjs2'
     },

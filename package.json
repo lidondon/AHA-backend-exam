@@ -9,7 +9,7 @@
     "build:prod": "webpack -p",
     "swagger-autogen": "node swagger.js",
     "watch": "webpack --watch",
-    "start": "node dist/index.bundle.js"
+    "start": "node output/index.bundle.js"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
