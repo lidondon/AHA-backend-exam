@@ -93,6 +93,7 @@ const SIGN_UP_BY_EMAIL = 1;
 const connectionPool = __WEBPACK_IMPORTED_MODULE_3_mysql___default.a.createPool({
     connectionLimit: 20,
     host: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* default */].mysqlHost,
+    port: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* default */].mysqlPort,
     user: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* default */].mysqlUserName,
     password: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* default */].mysqlPass,
     database: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* default */].mysqlDatabase,

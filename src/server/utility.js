@@ -12,6 +12,7 @@ const SIGN_UP_BY_EMAIL = 1;
 const connectionPool = mysql.createPool({
     connectionLimit: 20,
     host: config.mysqlHost,
+    port: config.mysqlPort,
     user: config.mysqlUserName,
     password: config.mysqlPass,
     database: config.mysqlDatabase,
