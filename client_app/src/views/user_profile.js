@@ -21,6 +21,18 @@ class UserProfile extends BaseView {
         this.props.actions.getUserInfo();
     }
 
+    componentWillUnmount() {
+        this.props.actions.clear();
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        super.componentWillUpdate(nextProps, nextState);
+        if (nextProps.userProfile.isSendEmailSuccessfully) {
+            Modal.success({ title: stringEn.hasSentEmail });
+            this.props.history.push("/");
+        }
+    }
+
     onCancelModal = () => {
         this.setState({
             newName: '',
@@ -62,7 +74,7 @@ class UserProfile extends BaseView {
     }
 
     onSendEmailClick = (e) => {
-        this.props.history.push("/");
+        this.props.actions.sendEmail();
     }
     
     getUserInfoContent = () => {

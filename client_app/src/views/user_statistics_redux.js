@@ -36,7 +36,7 @@ export const getUserStatistics = () => {
 const reducer = (state = initialState, action) => {
     let resultCase = {
         GET_USERS: processGetUsers,
-        GET_USER_STATISTICS: processGetUserStatistics
+        GET_USER_STATISTICS: processGetUserStatistics        
     };
 
     return resultCase[action.type] ? resultCase[action.type](state, action) : state;
@@ -52,9 +52,8 @@ const processGetUsers = (state, action) => {
 
 const processGetUserStatistics = (state, action) => {
     const result = getBaseAxiosResult(state, action);
-    console.log('processGetUserStatistics');
+    
     if (action.status === SUCCESS && action.payload) { 
-        console.log('processGetUserStatistics', action.payload);
         result.usersCount = action.payload.data.usersCount;
         result.todayActiveUserCount = action.payload.data.todayActiveUserCount;
         result.average7daysUserCount = action.payload.data.average7daysUserCount;

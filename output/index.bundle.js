@@ -93,7 +93,6 @@ const SIGN_UP_BY_EMAIL = 1;
 const connectionPool = __WEBPACK_IMPORTED_MODULE_3_mysql___default.a.createPool({
     connectionLimit: 20,
     host: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* default */].mysqlHost,
-    port: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* default */].mysqlPort,
     user: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* default */].mysqlUserName,
     password: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* default */].mysqlPass,
     database: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* default */].mysqlDatabase,
@@ -195,6 +194,7 @@ const getTokenVerifier = need2CheckEmailVerified => {
     return (request, response, next) => {
         const bearerHeader = request.headers.authorization;
 
+        console.log('Request', JSON.stringify(request));
         if (typeof bearerHeader !== 'undefined') {
             const bearer = bearerHeader.split(' ');
             const token = bearer[1];
