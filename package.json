@@ -9,7 +9,7 @@
     "build:prod": "webpack -p",
     "swagger-autogen": "node swagger.js",
     "watch": "webpack --watch",
-    "start": "nodemon output/index.bundle.js",
+    "start": "node output/index.bundle.js",
     "forever": "forever --minUptime=1000 --spinSleepTime=1000 start output/index.bundle.js"
   },
   "dependencies": {
