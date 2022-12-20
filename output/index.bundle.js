@@ -194,7 +194,6 @@ const getTokenVerifier = need2CheckEmailVerified => {
     return (request, response, next) => {
         const bearerHeader = request.headers.authorization;
 
-        console.log('Request', JSON.stringify(request));
         if (typeof bearerHeader !== 'undefined') {
             const bearer = bearerHeader.split(' ');
             const token = bearer[1];
