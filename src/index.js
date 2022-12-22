@@ -1,12 +1,18 @@
-import config from './config/config';
+import https from 'https';
+import fs from 'fs';
+// import config from './config/config';
 import app from './config/express';
 
-if (!module.parent) {
-    // listen on port config.port
-    app.listen(config.port, () => {
-        console.log(`server started on  port http://127.0.0.1:${config.port} (${config.env})`);
-    });
-}
+const privateKey = fs.readFileSync('key.pem', 'utf8');
+const certificate = fs.readFileSync('cert.pem', 'utf8');
+const credentials = {
+    key: privateKey,
+    cert: certificate
+};
+
+https.createServer(credentials, app).listen(3000, () => {
+    console.log('https server listening on port 3000');
+});
 
 export default app;
 

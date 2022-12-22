@@ -3,8 +3,8 @@ import { isLogin, setLoginData, getLoginData } from '../utilities/authentication
 
 import { SERVER_ERROR } from '../views/base_view_redux';
 
-const BASE_URL = `http://${SERVER_HOST}`;
-const AUTH_BASE_URL = `http://${SERVER_HOST}`;
+const BASE_URL = `https://${SERVER_HOST}`;
+const AUTH_BASE_URL = `https://${SERVER_HOST}`;
 const AUTH_HEARDER = 'Authorization';
 const BEARER_PREFIX = 'Bearer ';
 

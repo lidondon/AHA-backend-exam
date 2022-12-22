@@ -40,7 +40,7 @@ const put = (request, response) => {
 };
 
 const sendVerifyingEmail = (request, response) => {
-    const url = `http://${request.headers.host}/api/user/verify`;
+    const url = `https://${request.headers.host}/api/user/verify`;
 
     userModule.sendVerifyingEmail(url, request.body).then((result) => {
         response.send(utility.http.successResponse(result));

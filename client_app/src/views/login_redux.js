@@ -1,7 +1,7 @@
 import { setLoginData } from '../utilities/authentication';
 import { assembleErrorMsg } from '../utilities/util';
 
-const AUTH_BASE_URL = `http://${SERVER_HOST}`;
+const AUTH_BASE_URL = `https://${SERVER_HOST}`;
 const LOGIN_URL = "/api/login";
 const LOGIN = "LOGIN";
 const LOADING = "LOADING";
