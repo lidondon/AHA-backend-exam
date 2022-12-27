@@ -1,4 +1,4 @@
-import { getLoginData, setLoginData } from '../utilities/authentication';
+import { getLoginData, setLoginData, SIGN_UP_TYPE } from '../utilities/authentication';
 
 const UPDATE_USER = 'UPDATE_USER';
 const UPDATE_USER_URL = id => `/api/user/${id}`;
@@ -18,6 +18,7 @@ const initialState = {
     email: '',
     name: '',
     hasVerified: -1,
+    signUpType: SIGN_UP_TYPE.EMAIL,
     isSendEmailSuccessfully: false
 }
 
@@ -96,7 +97,8 @@ const processGetUserInfo = (state, action) => {
         result.id = action.payload.data.id,
         result.email = action.payload.data.email,
         result.name = action.payload.data.name,
-        result.hasVerified = action.payload.data.hasVerified
+        result.hasVerified = action.payload.data.hasVerified,
+        result.signUpType = action.payload.data.signUpType
     }
 
     return result;

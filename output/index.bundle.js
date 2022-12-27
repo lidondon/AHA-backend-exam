@@ -61,7 +61,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -69,15 +69,15 @@ module.exports =
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jsonwebtoken__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jsonwebtoken__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jsonwebtoken___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jsonwebtoken__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_sha1__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_sha1__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_sha1___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_js_sha1__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_http_status__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_http_status__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_http_status___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_http_status__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_mysql__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_mysql__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_mysql___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_mysql__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__config_string_zh__ = __webpack_require__(1);
 
 
@@ -306,6 +306,8 @@ const common = {
     verifyingEmailSubject: 'AHA後端Email驗證',
     clickUrlBelow2Verify: '請點擊下方連結完成Email驗證',
     verifyingEmailLinkError: 'Email認證連結錯誤',
+    noGoogleUser: '並未取得Google用戶資料！',
+    duplicatedEmail: '此Email已經註冊過！',
     passwordFormat: '密碼至少需要一個小寫字母、一個大小字母、一個數字、一個特殊符號以及長度超過八！'
 });
 
@@ -317,6 +319,69 @@ module.exports = require("express");
 
 /***/ }),
 /* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_joi__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_joi___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_joi__);
+
+
+// require and configure dotenv, will load vars in .env in PROCESS.ENV
+__webpack_require__(10).config();
+
+// 建立每個變數 joi 驗證規則
+const envVarSchema = __WEBPACK_IMPORTED_MODULE_0_joi___default.a.object().keys({
+    VERSION: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
+    NODE_ENV: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string().default('development').allow(['development', 'production']),
+    PORT: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.number().default(3000),
+    MYSQL_PORT: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.number().default(3306),
+    MYSQL_HOST: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string().default('127.0.0.1'),
+    MYSQL_USER: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
+    MYSQL_PASS: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
+    MYSQL_NAME: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
+    JWT_SECRET_KEY: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
+    JWT_EXPIRED: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.number().default(20),
+    SENDGRID_API_KEY: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
+    EMAIL_FROM: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string().email(),
+    GOOGLE_CLIENT_ID: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
+    GOOGLE_CLIENT_SECRET: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
+    FACEBOOK_CLIENT_ID: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
+    FACEBOOK_CLIENT_SECRET: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string()
+}).unknown().required();
+
+const { error, value: envVars } = __WEBPACK_IMPORTED_MODULE_0_joi___default.a.validate(process.env, envVarSchema);
+
+if (error) throw new Error(`Config validation error: ${error.message}`);
+
+const config = {
+    version: envVars.VERSION,
+    env: envVars.NODE_ENV,
+    port: envVars.PORT,
+    mysqlPort: envVars.MYSQL_PORT,
+    mysqlHost: envVars.MYSQL_HOST,
+    mysqlUserName: envVars.MYSQL_USER,
+    mysqlPass: envVars.MYSQL_PASS,
+    mysqlDatabase: envVars.MYSQL_DATABASE,
+    jwtSecretKey: envVars.JWT_SECRET_KEY,
+    jwtTokenExpired: envVars.JWT_EXPIRED,
+    sendgridApiKey: envVars.SENDGRID_API_KEY,
+    emailFrom: envVars.EMAIL_FROM,
+    googleClientId: envVars.GOOGLE_CLIENT_ID,
+    googleClientSecret: envVars.GOOGLE_CLIENT_SECRET,
+    facebookClientId: envVars.FACEBOOK_CLIENT_ID,
+    facebookClientSecret: envVars.FACEBOOK_CLIENT_SECRET
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (config);
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("joi");
+
+/***/ }),
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -336,6 +401,11 @@ const signUp = __WEBPACK_IMPORTED_MODULE_0_joi___default.a.object().keys({
     password: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string().regex(passwordRegEx).required()
 });
 
+const googleOrFacebookLogin = __WEBPACK_IMPORTED_MODULE_0_joi___default.a.object().keys({
+    email: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string().email().required(),
+    name: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string()
+});
+
 const resetName = __WEBPACK_IMPORTED_MODULE_0_joi___default.a.object().keys({
     name: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string().required()
 });
@@ -353,545 +423,21 @@ const sendEmail = __WEBPACK_IMPORTED_MODULE_0_joi___default.a.object().keys({
 /* harmony default export */ __webpack_exports__["a"] = ({
     refreshToken,
     signUp,
+    googleOrFacebookLogin,
     resetName,
     resetPassword,
     sendEmail
 });
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = require("joi");
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_joi__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_joi___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_joi__);
-
-
-// require and configure dotenv, will load vars in .env in PROCESS.ENV
-__webpack_require__(20).config();
-
-// 建立每個變數 joi 驗證規則
-const envVarSchema = __WEBPACK_IMPORTED_MODULE_0_joi___default.a.object().keys({
-    VERSION: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
-    NODE_ENV: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string().default('development').allow(['development', 'production']),
-    PORT: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.number().default(3000),
-    MYSQL_PORT: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.number().default(3306),
-    MYSQL_HOST: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string().default('127.0.0.1'),
-    MYSQL_USER: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
-    MYSQL_PASS: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
-    MYSQL_NAME: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
-    JWT_SECRET_KEY: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
-    JWT_EXPIRED: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.number().default(20),
-    SENDGRID_API_KEY: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string(),
-    EMAIL_FROM: __WEBPACK_IMPORTED_MODULE_0_joi___default.a.string().email()
-}).unknown().required();
-
-const { error, value: envVars } = __WEBPACK_IMPORTED_MODULE_0_joi___default.a.validate(process.env, envVarSchema);
-
-if (error) throw new Error(`Config validation error: ${error.message}`);
-
-const config = {
-    version: envVars.VERSION,
-    env: envVars.NODE_ENV,
-    port: envVars.PORT,
-    mysqlPort: envVars.MYSQL_PORT,
-    mysqlHost: envVars.MYSQL_HOST,
-    mysqlUserName: envVars.MYSQL_USER,
-    mysqlPass: envVars.MYSQL_PASS,
-    mysqlDatabase: envVars.MYSQL_DATABASE,
-    jwtSecretKey: envVars.JWT_SECRET_KEY,
-    jwtTokenExpired: envVars.JWT_EXPIRED,
-    sendgridApiKey: envVars.SENDGRID_API_KEY,
-    emailFrom: envVars.EMAIL_FROM
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (config);
-
-/***/ }),
 /* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_https__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_https___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_https__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_fs__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_fs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_fs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_express__ = __webpack_require__(9);
-
-
-// import config from './config/config';
-
-
-const privateKey = __WEBPACK_IMPORTED_MODULE_1_fs___default.a.readFileSync('key.pem', 'utf8');
-const certificate = __WEBPACK_IMPORTED_MODULE_1_fs___default.a.readFileSync('cert.pem', 'utf8');
-const credentials = {
-    key: privateKey,
-    cert: certificate
-};
-
-__WEBPACK_IMPORTED_MODULE_0_https___default.a.createServer(credentials, __WEBPACK_IMPORTED_MODULE_2__config_express__["a" /* default */]).listen(3000, () => {
-    console.log('https server listening on port 3000');
-});
-
-/* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_2__config_express__["a" /* default */]);
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-module.exports = require("https");
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-module.exports = require("fs");
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_body_parser__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_body_parser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_body_parser__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_passport__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_passport___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_passport__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_cors__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_cors___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_cors__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_morgan__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_morgan___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_morgan__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__server_routes_index_route__ = __webpack_require__(14);
-
-// import httpStatus from 'http-status';
-
-
-
-
-
-// import config from './config';
-
-const app = __WEBPACK_IMPORTED_MODULE_0_express___default()();
-
-app.use(__WEBPACK_IMPORTED_MODULE_3_cors___default()());
-app.use(__WEBPACK_IMPORTED_MODULE_1_body_parser___default.a.json());
-app.use(__WEBPACK_IMPORTED_MODULE_1_body_parser___default.a.urlencoded({ extended: true }));
-app.use(__WEBPACK_IMPORTED_MODULE_4_morgan___default()('dev'));
-app.use(__WEBPACK_IMPORTED_MODULE_0_express___default.a.static('public'));
-app.set('view engine', 'jade');
-app.get('/', (request, response) => {
-    response.render('index', { serverHost: request.headers.host });
-});
-app.use('/api', __WEBPACK_IMPORTED_MODULE_5__server_routes_index_route__["a" /* default */]);
-app.get('/auth/facebook', __WEBPACK_IMPORTED_MODULE_2_passport___default.a.authenticate('facebook'));
-
-/* harmony default export */ __webpack_exports__["a"] = (app);
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-module.exports = require("body-parser");
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
-module.exports = require("passport");
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-module.exports = require("cors");
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-module.exports = require("morgan");
-
-/***/ }),
-/* 14 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__login_route__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__user_route__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__statistics_route__ = __webpack_require__(27);
-
-
-
-
-
-const router = __WEBPACK_IMPORTED_MODULE_0_express___default.a.Router();
-
-router.use('/user', __WEBPACK_IMPORTED_MODULE_2__user_route__["a" /* default */]);
-router.use('/login', __WEBPACK_IMPORTED_MODULE_1__login_route__["a" /* default */]);
-router.use('/statistics', __WEBPACK_IMPORTED_MODULE_3__statistics_route__["a" /* default */]);
-
-/* harmony default export */ __webpack_exports__["a"] = (router);
-
-/***/ }),
-/* 15 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utility__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_string_zh__ = __webpack_require__(1);
-
-
-
-
-
-
-const router = __WEBPACK_IMPORTED_MODULE_0_express___default.a.Router();
-const tokenVerifier = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].jwt.getTokenVerifierCheckEmail();
-const tokenExpiredVerifier = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].jwt.getTokenExpiredVerifier();
-const postErrorMessage = `${__WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].inputFormatError}: ${__WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].passwordFormat}`;
-const postValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].signUp, postErrorMessage);
-const resetPasswordValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].resetPassword, postErrorMessage);
-const refreshTokenValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].refreshToken, __WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].inputFormatError);
-
-router.route('/').post(postValidator, __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__["a" /* default */].post);
-router.route('/:id').put([tokenVerifier, resetPasswordValidator], __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__["a" /* default */].put);
-router.route('/refreshtoken').post([tokenExpiredVerifier, refreshTokenValidator], __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__["a" /* default */].refreshToken);
-
-/* harmony default export */ __webpack_exports__["a"] = (router);
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports) {
-
-module.exports = require("jsonwebtoken");
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-module.exports = require("js-sha1");
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports) {
-
-module.exports = require("http-status");
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports) {
-
-module.exports = require("mysql");
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports) {
-
-module.exports = require("dotenv");
-
-/***/ }),
-/* 21 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_login_module__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_string_zh__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utility__ = __webpack_require__(0);
-
-
-
-
-const refreshToken = (request, response) => {
-    const input = request.body;
-
-    __WEBPACK_IMPORTED_MODULE_0__modules_login_module__["a" /* default */].refreshToken(input).then(result => {
-        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result));
-    }).catch(error => {
-        response.status(500).send(error);
-    });
-};
-
-const post = (request, response) => {
-    const input = request.body;
-
-    __WEBPACK_IMPORTED_MODULE_0__modules_login_module__["a" /* default */].login(input).then(result => {
-        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result));
-    }).catch(error => {
-        response.status(500).send(error);
-    });
-};
-
-const put = (request, response) => {
-    __WEBPACK_IMPORTED_MODULE_0__modules_login_module__["a" /* default */].resetPassword(request.body, request.params).then(result => {
-        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result.affectedRows === 1));
-    }).catch(error => {
-        response.status(500).send(`${__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].updateUserFailure}: ${error}`);
-    });
-};
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    refreshToken,
-    post,
-    put
-});
-
-/***/ }),
-/* 22 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utility__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_string_zh__ = __webpack_require__(1);
-
-
-
-// for saving time, use this simple way not "access token and refresh token" and might have some safety issue
-const refreshToken = input => {
-    return new Promise((resolve, reject) => {
-        __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].sql.connectionPool.getConnection((connectionError, connection) => {
-            if (connectionError) {
-                reject(connectionError);
-            } else {
-                const sqlString = 'select * from users where id = ? and email = ?';
-                const sqlParameters = [input.id, input.email];
-
-                connection.query(sqlString, sqlParameters, (error, result) => {
-                    if (error) {
-                        reject(error.sqlMessage);
-                    } else if (result.length === 0) {
-                        reject(__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].refreshTokenFailure);
-                    } else {
-                        resolve({ token: __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].jwt.createToken(result[0].id, result[0].email) });
-                    }
-                    connection.release();
-                });
-            }
-        });
-    });
-};
-
-const insertLoginRecord = (id, connection, callback) => {
-    const sqlString = 'insert into login_records set ? ';
-    const insertData = { user_id: id };
-
-    connection.query(sqlString, insertData, callback);
-};
-
-const login = loginData => {
-    return new Promise((resolve, reject) => {
-        __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].sql.connectionPool.getConnection((connectionError, connection) => {
-            if (connectionError) {
-                reject(connectionError);
-            } else {
-                const sqlString = 'select * from users where email = ? and password = ?';
-                const sqlParameters = [loginData.email, __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].jwt.getHash(loginData.password)];
-
-                connection.query(sqlString, sqlParameters, (error, result) => {
-                    if (error) {
-                        reject(error.sqlMessage);
-                    } else if (result.length === 0) {
-                        reject(__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].loginError);
-                    } else {
-                        const data = {
-                            id: result[0].id,
-                            email: result[0].email,
-                            name: result[0].name,
-                            hasVerified: result[0].has_verified,
-                            token: __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].jwt.createToken(result[0].id, result[0].email)
-                        };
-
-                        insertLoginRecord(result[0].id, connection, err => {
-                            if (err) {
-                                reject(__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].loginRecordFailure);
-                            } else {
-                                resolve(data);
-                            }
-                        });
-                    }
-                    connection.release();
-                });
-            }
-        });
-    });
-};
-
-const verifyPassword = (id, password, connection, callback) => {
-    const sqlString = 'select * from users where id = ? and password = ?';
-    const sqlParameters = [id, __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].jwt.getHash(password)];
-
-    connection.query(sqlString, sqlParameters, callback);
-};
-
-const resetPassword = (input, params) => {
-    return new Promise((resolve, reject) => {
-        __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].sql.connectionPool.getConnection((connectionError, connection) => {
-            if (connectionError) {
-                reject(connectionError);
-            } else {
-                verifyPassword(params.id, input.password, connection, (error, result) => {
-                    if (error) {
-                        reject(error.sqlMessage);
-                    } else if (result.length === 0) {
-                        reject(__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].passwordError);
-                    } else {
-                        const sqlString = 'update users set password = ? where id = ?';
-                        const newPasswordHash = __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].jwt.getHash(input.newPassword);
-                        const sqlParameters = [newPasswordHash, params.id];
-
-                        connection.query(sqlString, sqlParameters, (err, resetResult) => {
-                            if (error) {
-                                reject(err.sqlMessage);
-                            } else {
-                                resolve(resetResult);
-                            }
-                        });
-                    }
-                });
-            }
-            connection.release();
-        });
-    });
-};
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    refreshToken,
-    login,
-    resetPassword
-});
-
-/***/ }),
-/* 23 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utility__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_string_zh__ = __webpack_require__(1);
-
-
-
-
-
-
-const router = __WEBPACK_IMPORTED_MODULE_0_express___default.a.Router();
-const tokenVerifier = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].jwt.getTokenVerifierCheckEmail();
-const tokenVerifierDontCheckEmail = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].jwt.getTokenVerifierDontCheckEmail();
-const postErrorMessage = `${__WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].inputFormatError}: ${__WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].passwordFormat}`;
-const postValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].signUp, postErrorMessage);
-const putValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].resetName, __WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].inputFormatError);
-const sendEmailValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].sendEmail, __WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].inputFormatError);
-
-router.route('/').post(postValidator, __WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__["a" /* default */].post);
-
-router.route('/:id').get(tokenVerifier, __WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__["a" /* default */].get).put([tokenVerifier, putValidator], __WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__["a" /* default */].put);
-
-router.route('/sendemail').post([tokenVerifierDontCheckEmail, sendEmailValidator], __WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__["a" /* default */].sendVerifyingEmail);
-
-router.route('/verify/:id/hash/:emailhash').get(__WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__["a" /* default */].verifyEmail);
-
-/* harmony default export */ __webpack_exports__["a"] = (router);
-
-/***/ }),
-/* 24 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_user_module__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_string_zh__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utility__ = __webpack_require__(0);
-
-
-
-
-const get = (request, response) => {
-    __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].getUser(request.params.id).then(result => {
-        if (result.length === 1) {
-            const user = {
-                id: result[0].id,
-                email: result[0].email,
-                name: result[0].name,
-                hasVerified: result[0].has_verified,
-                createdTime: result[0].created_time
-            };
-
-            response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(user));
-        } else {
-            response.status(204).send(__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].noUser);
-        }
-    }).catch(error => {
-        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.errorResponse(500, `${__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].getUserFailure}: ${error}`));
-        response.status(500).send(`${__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].getUserFailure}: ${error}`);
-    });
-};
-
-const post = (request, response) => {
-    __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].createUser(request.body).then(result => {
-        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse({ id: result }));
-    }).catch(error => {
-        response.status(500).send(`${__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].insertFailure}: ${error}`);
-    });
-};
-
-const put = (request, response) => {
-    __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].updateUser(request.body, request.params.id).then(result => {
-        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result.affectedRows === 1));
-    }).catch(error => {
-        response.status(500).send(`${__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].updateUserFailure}: ${error}`);
-    });
-};
-
-const sendVerifyingEmail = (request, response) => {
-    const url = `https://${request.headers.host}/api/user/verify`;
-
-    __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].sendVerifyingEmail(url, request.body).then(result => {
-        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result));
-    }).catch(error => {
-        response.status(500).send(error);
-    });
-};
-
-const verifyEmail = (request, response) => {
-    __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].verifyEmail(request.params.id, request.params.emailhash).then(() => {
-        response.redirect('/');
-    }).catch(error => {
-        response.status(500).send(error);
-    });
-};
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    get,
-    post,
-    put,
-    sendVerifyingEmail,
-    verifyEmail
-});
-
-/***/ }),
-/* 25 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sendgrid_mail__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sendgrid_mail__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sendgrid_mail___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__sendgrid_mail__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utility__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_string_zh__ = __webpack_require__(1);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -909,6 +455,27 @@ const getUser = id => {
                 const sqlString = 'select * from users where id = ? ';
 
                 connection.query(sqlString, id, (error, result) => {
+                    if (error) {
+                        reject(error.sqlMessage);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            }
+            connection.release();
+        });
+    });
+};
+
+const getUserByEmail = email => {
+    return new Promise((resolve, reject) => {
+        __WEBPACK_IMPORTED_MODULE_1__utility__["a" /* default */].sql.connectionPool.getConnection((connectionError, connection) => {
+            if (connectionError) {
+                reject(connectionError);
+            } else {
+                const sqlString = 'select * from users where email = ? ';
+
+                connection.query(sqlString, email, (error, result) => {
                     if (error) {
                         reject(error.sqlMessage);
                     } else {
@@ -1007,6 +574,7 @@ const verifyEmail = (id, emailhash) => {
 
 /* harmony default export */ __webpack_exports__["a"] = ({
     getUser,
+    getUserByEmail,
     createUser,
     updateUser,
     sendVerifyingEmail,
@@ -1014,20 +582,579 @@ const verifyEmail = (id, emailhash) => {
 });
 
 /***/ }),
-/* 26 */
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_https__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_https___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_https__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_fs__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_fs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_fs__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_express__ = __webpack_require__(11);
+
+
+
+
+
+const privateKey = __WEBPACK_IMPORTED_MODULE_1_fs___default.a.readFileSync('key.pem', 'utf8');
+const certificate = __WEBPACK_IMPORTED_MODULE_1_fs___default.a.readFileSync('cert.pem', 'utf8');
+const credentials = {
+    key: privateKey,
+    cert: certificate
+};
+
+// if (!module.parent) {
+//     app.listen(config.port, () => {
+//         console.log(`server started on  port https://127.0.0.1:${config.port} (${config.env})`);
+//     });
+// }
+
+__WEBPACK_IMPORTED_MODULE_0_https___default.a.createServer(credentials, __WEBPACK_IMPORTED_MODULE_3__config_express__["a" /* default */]).listen(__WEBPACK_IMPORTED_MODULE_2__config_config__["a" /* default */].port, () => {
+    console.log('https server listening on port 3000');
+});
+
+/* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_3__config_express__["a" /* default */]);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = require("https");
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = require("fs");
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = require("dotenv");
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_body_parser__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_body_parser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_body_parser__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_cors__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_cors___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_cors__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_morgan__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_morgan___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_morgan__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__server_routes_index_route__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__config__ = __webpack_require__(3);
+
+// import session from 'express-session';
+
+// import passport from 'passport';
+// import googleAuth from 'passport-google-oauth20';
+
+
+
+
+
+const app = __WEBPACK_IMPORTED_MODULE_0_express___default()();
+// const googleOptions = {
+//     clientID: config.googleClientId,
+//     clientSecret: config.googleClientSecret,
+//     callbackURL: 'https://b433-2001-b011-2005-939e-898-2a5d-1c8d-a37f.ngrok.io/api/login/google/callback',
+//     passReqToCallback: true
+// };
+
+// const googleVerify = (request, accessToken, refreshToken, profile, done) => {
+//     // eslint-disable-next-line no-undef
+//     // console.log(`googleVerify -> profile: ${JSON.stringify(profile)}`);
+//     return done(null, profile);
+// };
+
+app.use(__WEBPACK_IMPORTED_MODULE_2_cors___default()());
+app.use(__WEBPACK_IMPORTED_MODULE_1_body_parser___default.a.json());
+app.use(__WEBPACK_IMPORTED_MODULE_1_body_parser___default.a.urlencoded({ extended: true }));
+app.use(__WEBPACK_IMPORTED_MODULE_3_morgan___default()('dev'));
+app.use(__WEBPACK_IMPORTED_MODULE_0_express___default.a.static('public'));
+app.set('view engine', 'jade');
+// app.use(session({
+//     secret: 'secret',
+//     resave: false,
+//     saveUninitialized: true
+// }));
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+app.get('/', (request, response) => {
+    response.render('index', {
+        serverHost: request.headers.host,
+        googleClientId: __WEBPACK_IMPORTED_MODULE_5__config__["a" /* default */].googleClientId,
+        facebookClientId: __WEBPACK_IMPORTED_MODULE_5__config__["a" /* default */].facebookClientId
+    });
+});
+app.use('/api', __WEBPACK_IMPORTED_MODULE_4__server_routes_index_route__["a" /* default */]);
+
+/* harmony default export */ __webpack_exports__["a"] = (app);
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+module.exports = require("body-parser");
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+module.exports = require("cors");
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+module.exports = require("morgan");
+
+/***/ }),
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__login_route__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__user_route__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__statistics_route__ = __webpack_require__(26);
+
+
+
+
+
+const router = __WEBPACK_IMPORTED_MODULE_0_express___default.a.Router();
+
+router.use('/user', __WEBPACK_IMPORTED_MODULE_2__user_route__["a" /* default */]);
+router.use('/login', __WEBPACK_IMPORTED_MODULE_1__login_route__["a" /* default */]);
+router.use('/statistics', __WEBPACK_IMPORTED_MODULE_3__statistics_route__["a" /* default */]);
+
+/* harmony default export */ __webpack_exports__["a"] = (router);
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utility__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_string_zh__ = __webpack_require__(1);
+
+
+
+
+
+
+const router = __WEBPACK_IMPORTED_MODULE_0_express___default.a.Router();
+const tokenVerifier = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].jwt.getTokenVerifierCheckEmail();
+const tokenExpiredVerifier = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].jwt.getTokenExpiredVerifier();
+const postErrorMessage = `${__WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].inputFormatError}: ${__WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].passwordFormat}`;
+const postValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].signUp, postErrorMessage);
+const resetPasswordValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].resetPassword, postErrorMessage);
+const refreshTokenValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].refreshToken, __WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].inputFormatError);
+const googleOrFacebookLoginValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].googleOrFacebookLogin, __WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].inputFormatError);
+
+router.route('/').post(postValidator, __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__["a" /* default */].post);
+router.route('/:id').put([tokenVerifier, resetPasswordValidator], __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__["a" /* default */].put);
+router.route('/refreshtoken').post([tokenExpiredVerifier, refreshTokenValidator], __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__["a" /* default */].refreshToken);
+
+router.route('/google').post(googleOrFacebookLoginValidator, __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__["a" /* default */].googleLogin);
+router.route('/facebook').post(googleOrFacebookLoginValidator, __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__["a" /* default */].facebookLogin);
+
+/* harmony default export */ __webpack_exports__["a"] = (router);
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+module.exports = require("jsonwebtoken");
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+module.exports = require("js-sha1");
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+module.exports = require("http-status");
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+module.exports = require("mysql");
+
+/***/ }),
+/* 21 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_login_module__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_string_zh__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utility__ = __webpack_require__(0);
+
+
+
+
+
+const refreshToken = (request, response) => {
+    const input = request.body;
+
+    __WEBPACK_IMPORTED_MODULE_0__modules_login_module__["a" /* default */].refreshToken(input).then(result => {
+        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result));
+    }).catch(error => {
+        response.status(500).send(error);
+    });
+};
+
+const post = (request, response) => {
+    const input = request.body;
+
+    __WEBPACK_IMPORTED_MODULE_0__modules_login_module__["a" /* default */].login(input).then(result => {
+        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result));
+    }).catch(error => {
+        response.status(500).send(error);
+    });
+};
+
+const put = (request, response) => {
+    __WEBPACK_IMPORTED_MODULE_0__modules_login_module__["a" /* default */].resetPassword(request.body, request.params).then(result => {
+        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result.affectedRows === 1));
+    }).catch(error => {
+        response.status(500).send(`${__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].updateUserFailure}: ${error}`);
+    });
+};
+
+const googleLogin = (request, response) => {
+    __WEBPACK_IMPORTED_MODULE_0__modules_login_module__["a" /* default */].googleOrFacebookLogin(request.body.email, request.body.name, __WEBPACK_IMPORTED_MODULE_0__modules_login_module__["a" /* default */].SIGN_UP_TYPE.GOOGLE).then(result => {
+        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result));
+    }).catch(error => {
+        response.status(500).send(`Google login error: ${error}`);
+    });
+};
+
+const facebookLogin = (request, response) => {
+    __WEBPACK_IMPORTED_MODULE_0__modules_login_module__["a" /* default */].googleOrFacebookLogin(request.body.email, request.body.name, __WEBPACK_IMPORTED_MODULE_0__modules_login_module__["a" /* default */].SIGN_UP_TYPE.FACEBOOK).then(result => {
+        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result));
+    }).catch(error => {
+        response.status(500).send(`Facebook login error: ${error}`);
+    });
+};
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    refreshToken,
+    post,
+    put,
+    googleLogin,
+    facebookLogin
+});
+
+/***/ }),
+/* 22 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utility__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__user_module__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_string_zh__ = __webpack_require__(1);
+
+
+
+
+const SIGN_UP_TYPE = {
+    EMAIL: 1,
+    FACEBOOK: 2,
+    GOOGLE: 3
+};
+
+// for saving time, use this simple way not "access token and refresh token" and might have some safety issue
+const refreshToken = input => {
+    return new Promise((resolve, reject) => {
+        __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].sql.connectionPool.getConnection((connectionError, connection) => {
+            if (connectionError) {
+                reject(connectionError);
+            } else {
+                const sqlString = 'select * from users where id = ? and email = ?';
+                const sqlParameters = [input.id, input.email];
+
+                connection.query(sqlString, sqlParameters, (error, result) => {
+                    if (error) {
+                        reject(error.sqlMessage);
+                    } else if (result.length === 0) {
+                        reject(__WEBPACK_IMPORTED_MODULE_2__config_string_zh__["a" /* default */].refreshTokenFailure);
+                    } else {
+                        resolve({ token: __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].jwt.createToken(result[0].id, result[0].email) });
+                    }
+                    connection.release();
+                });
+            }
+        });
+    });
+};
+
+const insertLoginRecord = (id, connection, callback) => {
+    const sqlString = 'insert into login_records set ? ';
+    const insertData = { user_id: id };
+
+    connection.query(sqlString, insertData, callback);
+};
+
+const login = loginData => {
+    return new Promise((resolve, reject) => {
+        __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].sql.connectionPool.getConnection((connectionError, connection) => {
+            if (connectionError) {
+                reject(connectionError);
+            } else {
+                const sqlString = 'select * from users where email = ? and password = ?';
+                const sqlParameters = [loginData.email, __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].jwt.getHash(loginData.password)];
+
+                connection.query(sqlString, sqlParameters, (error, result) => {
+                    if (error) {
+                        reject(error.sqlMessage);
+                    } else if (result.length === 0) {
+                        reject(__WEBPACK_IMPORTED_MODULE_2__config_string_zh__["a" /* default */].loginError);
+                    } else {
+                        const data = {
+                            id: result[0].id,
+                            email: result[0].email,
+                            name: result[0].name,
+                            hasVerified: result[0].has_verified,
+                            token: __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].jwt.createToken(result[0].id, result[0].email)
+                        };
+
+                        insertLoginRecord(result[0].id, connection, err => {
+                            if (err) {
+                                reject(__WEBPACK_IMPORTED_MODULE_2__config_string_zh__["a" /* default */].loginRecordFailure);
+                            } else {
+                                resolve(data);
+                            }
+                        });
+                    }
+                    connection.release();
+                });
+            }
+        });
+    });
+};
+
+const googleOrFacebookLogin = (email, name, signUptype) => {
+    return new Promise((resolve, reject) => {
+        __WEBPACK_IMPORTED_MODULE_1__user_module__["a" /* default */].getUserByEmail(email).then(result => {
+            const user = {
+                email,
+                name,
+                password: email
+            };
+
+            if (result.length === 1) {
+                user.id = result[0].id;
+                login(user).then(data => {
+                    resolve(data);
+                }).catch(error => {
+                    if (error === __WEBPACK_IMPORTED_MODULE_2__config_string_zh__["a" /* default */].loginError) {
+                        reject(__WEBPACK_IMPORTED_MODULE_2__config_string_zh__["a" /* default */].duplicatedEmail);
+                    }
+                });
+            } else {
+                user.sign_up_type = signUptype;
+                user.has_verified = 1;
+                __WEBPACK_IMPORTED_MODULE_1__user_module__["a" /* default */].createUser(user).then(id => {
+                    user.id = id;
+                    login(user).then(data => {
+                        resolve(data);
+                    });
+                });
+            }
+        });
+    });
+};
+
+const verifyPassword = (id, password, connection, callback) => {
+    const sqlString = 'select * from users where id = ? and password = ?';
+    const sqlParameters = [id, __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].jwt.getHash(password)];
+
+    connection.query(sqlString, sqlParameters, callback);
+};
+
+const resetPassword = (input, params) => {
+    return new Promise((resolve, reject) => {
+        __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].sql.connectionPool.getConnection((connectionError, connection) => {
+            if (connectionError) {
+                reject(connectionError);
+            } else {
+                verifyPassword(params.id, input.password, connection, (error, result) => {
+                    if (error) {
+                        reject(error.sqlMessage);
+                    } else if (result.length === 0) {
+                        reject(__WEBPACK_IMPORTED_MODULE_2__config_string_zh__["a" /* default */].passwordError);
+                    } else {
+                        const sqlString = 'update users set password = ? where id = ?';
+                        const newPasswordHash = __WEBPACK_IMPORTED_MODULE_0__utility__["a" /* default */].jwt.getHash(input.newPassword);
+                        const sqlParameters = [newPasswordHash, params.id];
+
+                        connection.query(sqlString, sqlParameters, (err, resetResult) => {
+                            if (error) {
+                                reject(err.sqlMessage);
+                            } else {
+                                resolve(resetResult);
+                            }
+                        });
+                    }
+                });
+            }
+            connection.release();
+        });
+    });
+};
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    SIGN_UP_TYPE,
+    refreshToken,
+    login,
+    googleOrFacebookLogin,
+    resetPassword
+});
+
+/***/ }),
+/* 23 */
 /***/ (function(module, exports) {
 
 module.exports = require("@sendgrid/mail");
 
 /***/ }),
-/* 27 */
+/* 24 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utility__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_string_zh__ = __webpack_require__(1);
+
+
+
+
+
+
+const router = __WEBPACK_IMPORTED_MODULE_0_express___default.a.Router();
+const tokenVerifier = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].jwt.getTokenVerifierCheckEmail();
+const tokenVerifierDontCheckEmail = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].jwt.getTokenVerifierDontCheckEmail();
+const postErrorMessage = `${__WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].inputFormatError}: ${__WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].passwordFormat}`;
+const postValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].signUp, postErrorMessage);
+const putValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].resetName, __WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].inputFormatError);
+const sendEmailValidator = __WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.getValidationMiddleware(__WEBPACK_IMPORTED_MODULE_1__config_parameters_validation__["a" /* default */].sendEmail, __WEBPACK_IMPORTED_MODULE_4__config_string_zh__["a" /* default */].inputFormatError);
+
+router.route('/').post(postValidator, __WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__["a" /* default */].post);
+
+router.route('/:id').get(tokenVerifier, __WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__["a" /* default */].get).put([tokenVerifier, putValidator], __WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__["a" /* default */].put);
+
+router.route('/sendemail').post([tokenVerifierDontCheckEmail, sendEmailValidator], __WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__["a" /* default */].sendVerifyingEmail);
+
+router.route('/verify/:id/hash/:emailhash').get(__WEBPACK_IMPORTED_MODULE_3__controllers_user_controller__["a" /* default */].verifyEmail);
+
+/* harmony default export */ __webpack_exports__["a"] = (router);
+
+/***/ }),
+/* 25 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_user_module__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_string_zh__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utility__ = __webpack_require__(0);
+
+
+
+
+const get = (request, response) => {
+    __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].getUser(request.params.id).then(result => {
+        if (result.length === 1) {
+            const user = {
+                id: result[0].id,
+                email: result[0].email,
+                name: result[0].name,
+                hasVerified: result[0].has_verified,
+                signUpType: result[0].sign_up_type,
+                createdTime: result[0].created_time
+            };
+
+            response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(user));
+        } else {
+            response.status(204).send(__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].noUser);
+        }
+    }).catch(error => {
+        response.status(500).send(`${__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].getUserFailure}: ${error}`);
+    });
+};
+
+const post = (request, response) => {
+    __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].createUser(request.body).then(result => {
+        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse({ id: result }));
+    }).catch(error => {
+        response.status(500).send(`${__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].insertFailure}: ${error}`);
+    });
+};
+
+const put = (request, response) => {
+    __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].updateUser(request.body, request.params.id).then(result => {
+        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result.affectedRows === 1));
+    }).catch(error => {
+        response.status(500).send(`${__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].updateUserFailure}: ${error}`);
+    });
+};
+
+const sendVerifyingEmail = (request, response) => {
+    const url = `https://${request.headers.host}/api/user/verify`;
+
+    __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].sendVerifyingEmail(url, request.body).then(result => {
+        response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result));
+    }).catch(error => {
+        response.status(500).send(error);
+    });
+};
+
+const verifyEmail = (request, response) => {
+    __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].verifyEmail(request.params.id, request.params.emailhash).then(() => {
+        response.redirect('/');
+    }).catch(error => {
+        response.status(500).send(error);
+    });
+};
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    get,
+    post,
+    put,
+    sendVerifyingEmail,
+    verifyEmail
+});
+
+/***/ }),
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utility__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__controllers_statistics_controller__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__controllers_statistics_controller__ = __webpack_require__(27);
 
 
 
@@ -1041,11 +1168,11 @@ router.route('/getuserstatistics').get(tokenVerifier, __WEBPACK_IMPORTED_MODULE_
 /* harmony default export */ __webpack_exports__["a"] = (router);
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_statistics_module__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_statistics_module__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_string_zh__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utility__ = __webpack_require__(0);
 
@@ -1086,7 +1213,7 @@ const getUserStatistics = (request, response) => {
 });
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

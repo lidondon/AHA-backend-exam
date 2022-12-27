@@ -10,6 +10,7 @@ const get = (request, response) => {
                 email: result[0].email,
                 name: result[0].name,
                 hasVerified: result[0].has_verified,
+                signUpType: result[0].sign_up_type,
                 createdTime: result[0].created_time
             };
 
@@ -18,7 +19,6 @@ const get = (request, response) => {
             response.status(204).send(stringZh.noUser);
         }
     }).catch((error) => {
-        response.send(utility.http.errorResponse(500, `${stringZh.getUserFailure}: ${error}`));
         response.status(500).send(`${stringZh.getUserFailure}: ${error}`);
     });
 };

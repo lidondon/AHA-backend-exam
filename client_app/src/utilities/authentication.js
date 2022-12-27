@@ -1,3 +1,10 @@
+export const SIGN_UP_TYPE = {
+    EMAIL: 1,
+    FACEBOOK: 2,
+    GOOGLE: 3
+};
+
+
 const setCookie = (key, value) => {
     document.cookie = `${key}=${value}`;
 };

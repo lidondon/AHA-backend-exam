@@ -20,5 +20,7 @@ export default {
     verifyingEmailSubject: 'AHA後端Email驗證',
     clickUrlBelow2Verify: '請點擊下方連結完成Email驗證',
     verifyingEmailLinkError: 'Email認證連結錯誤',
+    noGoogleUser: '並未取得Google用戶資料！',
+    duplicatedEmail: '此Email已經註冊過！',
     passwordFormat: '密碼至少需要一個小寫字母、一個大小字母、一個數字、一個特殊符號以及長度超過八！'
 };

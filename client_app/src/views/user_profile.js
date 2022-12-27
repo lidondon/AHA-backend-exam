@@ -5,6 +5,7 @@ import { Row, Col, Button, Input, Modal } from 'antd';
 import BaseView from './base_view';
 import Loading from '../components/shared/loading';
 import * as actions from './user_profile_redux';
+import { SIGN_UP_TYPE } from '../utilities/authentication';
 import stringEn from '../constants/string_en';
 import './user_profile.css';
 
@@ -92,9 +93,12 @@ class UserProfile extends BaseView {
                     <Col span={4}><h2>NAME: </h2></Col>
                     <Col span={8}><h2>{userProfile.name}</h2></Col>
                 </Row>
-                <Row>
-                    <Col offset={2} span={4}><Button type='primary' onClick={this.onResetPasswordClick}>{stringEn.resetPassword}</Button></Col>
-                </Row>
+                {
+                    userProfile.signUpType === SIGN_UP_TYPE.EMAIL &&
+                    <Row>
+                        <Col offset={2} span={4}><Button type='primary' onClick={this.onResetPasswordClick}>{stringEn.resetPassword}</Button></Col>
+                    </Row>
+                }
                 <Modal width='30%' visible={isShowModal} onCancel={this.onCancelModal} footer={null}>
                     {this.getModalContent()}
                 </Modal>

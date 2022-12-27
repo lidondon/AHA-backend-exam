@@ -1,5 +1,12 @@
 import utility from '..//utility';
+import userModule from './user_module';
 import stringZh from '../../config/string_zh';
+
+const SIGN_UP_TYPE = {
+    EMAIL: 1,
+    FACEBOOK: 2,
+    GOOGLE: 3
+};
 
 // for saving time, use this simple way not "access token and refresh token" and might have some safety issue
 const refreshToken = (input) => {
@@ -71,6 +78,38 @@ const login = (loginData) => {
     });
 };
 
+const googleOrFacebookLogin = (email, name, signUptype) => {
+    return new Promise((resolve, reject) => {
+        userModule.getUserByEmail(email).then((result) => {
+            const user = {
+                email,
+                name,
+                password: email
+            };
+
+            if (result.length === 1) {
+                user.id = result[0].id;
+                login(user).then((data) => {
+                    resolve(data);
+                }).catch((error) => {
+                    if (error === stringZh.loginError) {
+                        reject(stringZh.duplicatedEmail);
+                    }
+                });
+            } else {
+                user.sign_up_type = signUptype;
+                user.has_verified = 1;
+                userModule.createUser(user).then((id) => {
+                    user.id = id;
+                    login(user).then((data) => {
+                        resolve(data);
+                    });
+                });
+            }
+        });
+    });
+};
+
 const verifyPassword = (id, password, connection, callback) => {
     const sqlString = 'select * from users where id = ? and password = ?';
     const sqlParameters = [id, utility.jwt.getHash(password)];
@@ -110,7 +149,9 @@ const resetPassword = (input, params) => {
 };
 
 export default {
+    SIGN_UP_TYPE,
     refreshToken,
     login,
+    googleOrFacebookLogin,
     resetPassword
 };

@@ -12,6 +12,11 @@ const signUp = Joi.object().keys({
     password: Joi.string().regex(passwordRegEx).required()
 });
 
+const googleOrFacebookLogin = Joi.object().keys({
+    email: Joi.string().email().required(),
+    name: Joi.string()
+});
+
 const resetName = Joi.object().keys({
     name: Joi.string().required()
 });
@@ -29,6 +34,7 @@ const sendEmail = Joi.object().keys({
 export default {
     refreshToken,
     signUp,
+    googleOrFacebookLogin,
     resetName,
     resetPassword,
     sendEmail

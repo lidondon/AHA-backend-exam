@@ -11,9 +11,13 @@ const postErrorMessage = `${stringZh.inputFormatError}: ${stringZh.passwordForma
 const postValidator = utility.http.getValidationMiddleware(parametersValidation.signUp, postErrorMessage);
 const resetPasswordValidator = utility.http.getValidationMiddleware(parametersValidation.resetPassword, postErrorMessage);
 const refreshTokenValidator = utility.http.getValidationMiddleware(parametersValidation.refreshToken, stringZh.inputFormatError);
+const googleOrFacebookLoginValidator = utility.http.getValidationMiddleware(parametersValidation.googleOrFacebookLogin, stringZh.inputFormatError);
 
 router.route('/').post(postValidator, loginController.post);
 router.route('/:id').put([tokenVerifier, resetPasswordValidator], loginController.put);
 router.route('/refreshtoken').post([tokenExpiredVerifier, refreshTokenValidator], loginController.refreshToken);
+
+router.route('/google').post(googleOrFacebookLoginValidator, loginController.googleLogin);
+router.route('/facebook').post(googleOrFacebookLoginValidator, loginController.facebookLogin);
 
 export default router;

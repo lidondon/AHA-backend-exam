@@ -24,6 +24,27 @@ const getUser = (id) => {
     });
 };
 
+const getUserByEmail = (email) => {
+    return new Promise((resolve, reject) => {
+        utility.sql.connectionPool.getConnection((connectionError, connection) => {
+            if (connectionError) {
+                reject(connectionError);
+            } else {
+                const sqlString = 'select * from users where email = ? ';
+
+                connection.query(sqlString, email, (error, result) => {
+                    if (error) {
+                        reject(error.sqlMessage);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            }
+            connection.release();
+        });
+    });
+};
+
 const createUser = (newUser) => {
     return new Promise((resolve, reject) => {
         utility.sql.connectionPool.getConnection((connectionError, connection) => {
@@ -111,6 +132,7 @@ const verifyEmail = (id, emailhash) => {
 
 export default {
     getUser,
+    getUserByEmail,
     createUser,
     updateUser,
     sendVerifyingEmail,

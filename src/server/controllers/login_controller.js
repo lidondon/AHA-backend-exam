@@ -1,3 +1,4 @@
+
 import loginModule from '../modules/login_module';
 import stringZh from '../../config/string_zh';
 import utility from '../utility';
@@ -30,9 +31,27 @@ const put = (request, response) => {
     });
 };
 
+const googleLogin = (request, response) => {
+    loginModule.googleOrFacebookLogin(request.body.email, request.body.name, loginModule.SIGN_UP_TYPE.GOOGLE).then((result) => {
+        response.send(utility.http.successResponse(result));
+    }).catch((error) => {
+        response.status(500).send(`Google login error: ${error}`);
+    });
+};
+
+const facebookLogin = (request, response) => {
+    loginModule.googleOrFacebookLogin(request.body.email, request.body.name, loginModule.SIGN_UP_TYPE.FACEBOOK).then((result) => {
+        response.send(utility.http.successResponse(result));
+    }).catch((error) => {
+        response.status(500).send(`Facebook login error: ${error}`);
+    });
+};
+
 export default {
     refreshToken,
     post,
-    put
+    put,
+    googleLogin,
+    facebookLogin
 };
 

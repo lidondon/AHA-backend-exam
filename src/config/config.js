@@ -16,7 +16,11 @@ const envVarSchema = Joi.object().keys({
     JWT_SECRET_KEY: Joi.string(),
     JWT_EXPIRED: Joi.number().default(20),
     SENDGRID_API_KEY: Joi.string(),
-    EMAIL_FROM: Joi.string().email()
+    EMAIL_FROM: Joi.string().email(),
+    GOOGLE_CLIENT_ID: Joi.string(),
+    GOOGLE_CLIENT_SECRET: Joi.string(),
+    FACEBOOK_CLIENT_ID: Joi.string(),
+    FACEBOOK_CLIENT_SECRET: Joi.string()
 }).unknown().required();
 
 const { error, value: envVars } = Joi.validate(process.env, envVarSchema);
@@ -35,7 +39,11 @@ const config = {
     jwtSecretKey: envVars.JWT_SECRET_KEY,
     jwtTokenExpired: envVars.JWT_EXPIRED,
     sendgridApiKey: envVars.SENDGRID_API_KEY,
-    emailFrom: envVars.EMAIL_FROM
+    emailFrom: envVars.EMAIL_FROM,
+    googleClientId: envVars.GOOGLE_CLIENT_ID,
+    googleClientSecret: envVars.GOOGLE_CLIENT_SECRET,
+    facebookClientId: envVars.FACEBOOK_CLIENT_ID,
+    facebookClientSecret: envVars.FACEBOOK_CLIENT_SECRET
 };
 
 export default config;

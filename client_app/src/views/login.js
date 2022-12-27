@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
 import { Row, Col, Button, Modal } from 'antd';
+import { GoogleLogin } from 'react-google-login';
+import FacebookLogin from 'react-facebook-login';
+import { gapi } from 'gapi-script';
 
 import { isLogin } from '../utilities/authentication';
 import { isEmailFormat, isPasswordFormat } from '../utilities/util';
@@ -10,9 +13,9 @@ import BaseView from './base_view';
 import IconInput from '../components/shared/icon_input';
 import * as actions from './login_redux';
 
-const USER_LOGIN = "用戶登入";
-const INPUT_ACCOUNT_PASSWORD = "請輸入帳號密碼";
-const INPUT_TYPE_ERROR = "帳號密碼格式錯誤";
+const USER_LOGIN = '用戶登入';
+const INPUT_ACCOUNT_PASSWORD = '請輸入帳號密碼';
+const INPUT_TYPE_ERROR = '帳號密碼格式錯誤';
 
 
 const googleBtnStyle = {
@@ -25,8 +28,8 @@ class Login extends BaseView {
     constructor(props) {
         super(props);
         this.state = {
-            account: "",
-            password: "",
+            account: '',
+            password: '',
             isAccountError: false,
             isPasswordError: false
         }
@@ -34,6 +37,8 @@ class Login extends BaseView {
 
     componentWillMount() {
         if (isLogin()) this.handleAlreadyLogin();
+        
+       gapi.load('client:auth2', this.initClient);
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -41,8 +46,15 @@ class Login extends BaseView {
         if (isLogin()) this.handleAlreadyLogin();
     }
 
+    initClient = () => {
+        gapi.client.init({
+            clientId: '507718638283-9fr1nk9br67iredd2siao0sfl7qlakon.apps.googleusercontent.com',
+            scope: ''
+        });
+    };
+
     handleAlreadyLogin = (e) => {
-        this.props.history.push("/");
+        this.props.history.push('/');
     }
 
     handleAccountChanged = (e) => {
@@ -76,21 +88,32 @@ class Login extends BaseView {
         }
     }
 
-    onFbLoginClick = () => {
+    onFbLoginCallback = (response) => {
+        this.props.actions.facebookLogin(response.email, response.name);
     }
 
-    onGoogleLoginClick = () => {
+    onGoogleLoginSuccess = (response) => {
+        const profile = response.profileObj;
+
+        this.props.actions.googleLogin(profile.email, profile.name);
+    }
+
+    onGoogleLoginFailure = (error) => {
+        Modal.error({ title: stringEn.resetPasswordSuccessfully });
     }
 
     render() {
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-4"></div>
-                    <div className="col-md-4">
+            <div className='container'>
+                <div className='row'>
+                    <div className='col-md-4'></div>
+                    <div className='col-md-4'>
                         <LoginBlock handleAccountChanged={this.handleAccountChanged} 
                             handlePasswordChanged={this.handlePasswordChanged}
                             onLoginClick={this.onLoginClick}
+                            onFbLoginCallback={this.onFbLoginCallback}
+                            onGoogleLoginSuccess={this.onGoogleLoginSuccess}
+                            onGoogleLoginFailure={this.onGoogleLoginFailure}
                             isAccountError={this.state.isAccountError}
                             isPasswordError={this.state.isPasswordError}/>
                     </div>
@@ -102,29 +125,35 @@ class Login extends BaseView {
 }
 
 const LoginBlock = props => {
-    const { onLoginClick, onFbLoginClick, onGoogleLoginClick, handleAccountChanged, handlePasswordChanged, isAccountError, isPasswordError } = props;
-    
+    const { onLoginClick, onFbLoginCallback, onGoogleLoginSuccess, onGoogleLoginFailure, handleAccountChanged, handlePasswordChanged, isAccountError, isPasswordError } = props;
+
     return (
-        <div className="card">
-            <article className="card-body">
-                <h4 className="card-title text-center mb-4 mt-1">{USER_LOGIN}</h4>
+        <div className='card'>
+            <article className='card-body'>
+                <h4 className='card-title text-center mb-4 mt-1'>{USER_LOGIN}</h4>
                 <hr />
-                <IconInput icon="fa fa-user" placeHolder="Email or Account" type="email" onChange={handleAccountChanged} isError={isAccountError}/>
-                <IconInput icon="fa fa-lock" placeHolder="******" type="password" onChange={handlePasswordChanged} isError={isPasswordError}/>
-                <div className="form-group">
-                    <Button block={true} onClick={onLoginClick} danger> Login </Button>
+                <IconInput icon='fa fa-user' placeHolder='Email or Account' type='email' onChange={handleAccountChanged} isError={isAccountError}/>
+                <IconInput icon='fa fa-lock' placeHolder='******' type='password' onChange={handlePasswordChanged} isError={isPasswordError}/>
+                <div className='form-group'>
+                    <Button block={true} onClick={onLoginClick}> Login </Button>
                 </div>
-                <div className="form-group">
+                <div className='form-group'>
                     <Row>
                         <Col>
-                            <Button block={true} type="primary" onClick={onFbLoginClick}> Facebook Login </Button>
+                            <FacebookLogin appId={FACEBOOK_CLIENT_ID}
+                                fields='email, name'
+                                callback={onFbLoginCallback}/>
                         </Col>
                     </Row>
                 </div>
-                <div className="form-group">
+                <div className='form-group'>
                     <Row>
                         <Col>
-                            <Button block={true} style={googleBtnStyle} onClick={onGoogleLoginClick}> Google Login </Button>
+                            <GoogleLogin clientId={GOOGLE_CLIENT_ID}
+                                buttonText='Google login'
+                                onSuccess={onGoogleLoginSuccess}
+                                onFailure={onGoogleLoginFailure}
+                                cookiePolicy={'single_host_origin'} />
                         </Col>
                     </Row>
                 </div>
