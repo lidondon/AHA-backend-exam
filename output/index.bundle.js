@@ -651,28 +651,13 @@ module.exports = require("dotenv");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__server_routes_index_route__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__config__ = __webpack_require__(3);
 
-// import session from 'express-session';
 
-// import passport from 'passport';
-// import googleAuth from 'passport-google-oauth20';
 
 
 
 
 
 const app = __WEBPACK_IMPORTED_MODULE_0_express___default()();
-// const googleOptions = {
-//     clientID: config.googleClientId,
-//     clientSecret: config.googleClientSecret,
-//     callbackURL: 'https://b433-2001-b011-2005-939e-898-2a5d-1c8d-a37f.ngrok.io/api/login/google/callback',
-//     passReqToCallback: true
-// };
-
-// const googleVerify = (request, accessToken, refreshToken, profile, done) => {
-//     // eslint-disable-next-line no-undef
-//     // console.log(`googleVerify -> profile: ${JSON.stringify(profile)}`);
-//     return done(null, profile);
-// };
 
 app.use(__WEBPACK_IMPORTED_MODULE_2_cors___default()());
 app.use(__WEBPACK_IMPORTED_MODULE_1_body_parser___default.a.json());
@@ -680,13 +665,6 @@ app.use(__WEBPACK_IMPORTED_MODULE_1_body_parser___default.a.urlencoded({ extende
 app.use(__WEBPACK_IMPORTED_MODULE_3_morgan___default()('dev'));
 app.use(__WEBPACK_IMPORTED_MODULE_0_express___default.a.static('public'));
 app.set('view engine', 'jade');
-// app.use(session({
-//     secret: 'secret',
-//     resave: false,
-//     saveUninitialized: true
-// }));
-// app.use(passport.initialize());
-// app.use(passport.session());
 
 app.get('/', (request, response) => {
     response.render('index', {

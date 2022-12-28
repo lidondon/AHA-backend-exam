@@ -37,21 +37,12 @@ class Login extends BaseView {
 
     componentWillMount() {
         if (isLogin()) this.handleAlreadyLogin();
-        
-       gapi.load('client:auth2', this.initClient);
     }
 
     componentWillUpdate(nextProps, nextState) {
         super.componentWillUpdate(nextProps, nextState);
         if (isLogin()) this.handleAlreadyLogin();
     }
-
-    initClient = () => {
-        gapi.client.init({
-            clientId: '507718638283-9fr1nk9br67iredd2siao0sfl7qlakon.apps.googleusercontent.com',
-            scope: ''
-        });
-    };
 
     handleAlreadyLogin = (e) => {
         this.props.history.push('/');
