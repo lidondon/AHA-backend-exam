@@ -750,6 +750,7 @@ router.route('/refreshtoken').post([tokenExpiredVerifier, refreshTokenValidator]
 
 router.route('/google').post(googleOrFacebookLoginValidator, __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__["a" /* default */].googleLogin);
 router.route('/facebook').post(googleOrFacebookLoginValidator, __WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__["a" /* default */].facebookLogin);
+router.route('/privacy').get(__WEBPACK_IMPORTED_MODULE_3__controllers_login_controller__["a" /* default */].privacy);
 
 /* harmony default export */ __webpack_exports__["a"] = (router);
 
@@ -834,12 +835,17 @@ const facebookLogin = (request, response) => {
     });
 };
 
+const privacy = (request, response) => {
+    response.send('隱私權保護政策內容，包括本網站如何處理在您使用網站服務時收集到的個人識別資料。隱私權保護政策不適用於本網站以外的相關連結網站，也不適用於非本網站所委託或參與管理的人員。');
+};
+
 /* harmony default export */ __webpack_exports__["a"] = ({
     refreshToken,
     post,
     put,
     googleLogin,
-    facebookLogin
+    facebookLogin,
+    privacy
 });
 
 /***/ }),
