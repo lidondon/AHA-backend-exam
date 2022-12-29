@@ -19,6 +19,9 @@ router.route('/refreshtoken').post([tokenExpiredVerifier, refreshTokenValidator]
 
 router.route('/google').post(googleOrFacebookLoginValidator, loginController.googleLogin);
 router.route('/facebook').post(googleOrFacebookLoginValidator, loginController.facebookLogin);
+
+// just for fb
 router.route('/privacy').get(loginController.privacy);
+router.route('/delete').get(loginController.deleteUser);
 
 export default router;
