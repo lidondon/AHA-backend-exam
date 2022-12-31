@@ -1075,6 +1075,10 @@ router.route('/verify/:id/hash/:emailhash').get(__WEBPACK_IMPORTED_MODULE_3__con
 
 
 
+const verifyingEmailLink = host => {
+    return `https://${host}/api/user/verify`;
+};
+
 const get = (request, response) => {
     __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].getUser(request.params.id).then(result => {
         if (result.length === 1) {
@@ -1098,6 +1102,11 @@ const get = (request, response) => {
 
 const post = (request, response) => {
     __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].createUser(request.body).then(result => {
+        const url = verifyingEmailLink(request.headers.host);
+
+        __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].sendVerifyingEmail(url, request.body).catch(error => {
+            response.status(500).send(error);
+        });
         response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse({ id: result }));
     }).catch(error => {
         response.status(500).send(`${__WEBPACK_IMPORTED_MODULE_1__config_string_zh__["a" /* default */].insertFailure}: ${error}`);
@@ -1113,7 +1122,7 @@ const put = (request, response) => {
 };
 
 const sendVerifyingEmail = (request, response) => {
-    const url = `https://${request.headers.host}/api/user/verify`;
+    const url = verifyingEmailLink(request.headers.host);
 
     __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].sendVerifyingEmail(url, request.body).then(result => {
         response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse(result));

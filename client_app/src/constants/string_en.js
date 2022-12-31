@@ -8,5 +8,6 @@ export default {
     hasSentEmail: 'Has sent verifying email, please activate your account by the link ',
     resetPassword: 'Reset password',
     sendVerifyingEmail: 'Send verifying email',
+    googleLoginFailure: 'Google login failure',
     emailVerifiedFirst: 'Please be verified by email first !'
 };

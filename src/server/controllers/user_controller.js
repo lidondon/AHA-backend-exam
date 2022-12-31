@@ -2,6 +2,10 @@ import userModule from '../modules/user_module';
 import stringZh from '../../config/string_zh';
 import utility from '../utility';
 
+const verifyingEmailLink = (host) => {
+    return `https://${host}/api/user/verify`;
+};
+
 const get = (request, response) => {
     userModule.getUser(request.params.id).then((result) => {
         if (result.length === 1) {
@@ -25,6 +29,11 @@ const get = (request, response) => {
 
 const post = (request, response) => {
     userModule.createUser(request.body).then((result) => {
+        const url = verifyingEmailLink(request.headers.host);
+
+        userModule.sendVerifyingEmail(url, request.body).catch((error) => {
+            response.status(500).send(error);
+        });
         response.send(utility.http.successResponse({ id: result }));
     }).catch((error) => {
         response.status(500).send(`${stringZh.insertFailure}: ${error}`);
@@ -40,7 +49,7 @@ const put = (request, response) => {
 };
 
 const sendVerifyingEmail = (request, response) => {
-    const url = `https://${request.headers.host}/api/user/verify`;
+    const url = verifyingEmailLink(request.headers.host);
 
     userModule.sendVerifyingEmail(url, request.body).then((result) => {
         response.send(utility.http.successResponse(result));

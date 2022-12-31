@@ -5,12 +5,12 @@ import { withRouter } from 'react-router-dom';
 import { Row, Col, Button, Modal } from 'antd';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
-import { gapi } from 'gapi-script';
 
 import { isLogin } from '../utilities/authentication';
 import { isEmailFormat, isPasswordFormat } from '../utilities/util';
 import BaseView from './base_view';
 import IconInput from '../components/shared/icon_input';
+import stringEn from '../constants/string_en';
 import * as actions from './login_redux';
 
 const USER_LOGIN = '用戶登入';
@@ -89,9 +89,9 @@ class Login extends BaseView {
         this.props.actions.googleLogin(profile.email, profile.name);
     }
 
-    onGoogleLoginFailure = (error) => {
-        Modal.error({ title: stringEn.resetPasswordSuccessfully });
-    }
+    // onGoogleLoginFailure = (error) => {
+    //     Modal.error({ title: stringEn.googleLoginFailure });
+    // }
 
     render() {
         return (
@@ -104,7 +104,7 @@ class Login extends BaseView {
                             onLoginClick={this.onLoginClick}
                             onFbLoginCallback={this.onFbLoginCallback}
                             onGoogleLoginSuccess={this.onGoogleLoginSuccess}
-                            onGoogleLoginFailure={this.onGoogleLoginFailure}
+                            // onGoogleLoginFailure={this.onGoogleLoginFailure}
                             isAccountError={this.state.isAccountError}
                             isPasswordError={this.state.isPasswordError}/>
                     </div>
@@ -116,7 +116,7 @@ class Login extends BaseView {
 }
 
 const LoginBlock = props => {
-    const { onLoginClick, onFbLoginCallback, onGoogleLoginSuccess, onGoogleLoginFailure, handleAccountChanged, handlePasswordChanged, isAccountError, isPasswordError } = props;
+    const { onLoginClick, onFbLoginCallback, onGoogleLoginSuccess, handleAccountChanged, handlePasswordChanged, isAccountError, isPasswordError } = props;
 
     return (
         <div className='card'>
@@ -143,7 +143,7 @@ const LoginBlock = props => {
                             <GoogleLogin clientId={GOOGLE_CLIENT_ID}
                                 buttonText='Google login'
                                 onSuccess={onGoogleLoginSuccess}
-                                onFailure={onGoogleLoginFailure}
+                                // onFailure={onGoogleLoginFailure}
                                 cookiePolicy={'single_host_origin'} />
                         </Col>
                     </Row>
