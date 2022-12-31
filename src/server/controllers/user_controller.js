@@ -31,7 +31,7 @@ const post = (request, response) => {
     userModule.createUser(request.body).then((result) => {
         const url = verifyingEmailLink(request.headers.host);
 
-        userModule.sendVerifyingEmail(url, request.body).catch((error) => {
+        userModule.sendVerifyingEmail(url, { id: result }).catch((error) => {
             response.status(500).send(error);
         });
         response.send(utility.http.successResponse({ id: result }));

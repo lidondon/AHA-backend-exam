@@ -1104,7 +1104,7 @@ const post = (request, response) => {
     __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].createUser(request.body).then(result => {
         const url = verifyingEmailLink(request.headers.host);
 
-        __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].sendVerifyingEmail(url, request.body).catch(error => {
+        __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].sendVerifyingEmail(url, { id: result }).catch(error => {
             response.status(500).send(error);
         });
         response.send(__WEBPACK_IMPORTED_MODULE_2__utility__["a" /* default */].http.successResponse({ id: result }));

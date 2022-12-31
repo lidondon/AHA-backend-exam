@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Row, Col, Button, Modal } from 'antd';
-// import { GoogleLogin } from 'react-google-login';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleLogin, hasGrantedAllScopesGoogle } from '@react-oauth/google';
 import FacebookLogin from 'react-facebook-login';
