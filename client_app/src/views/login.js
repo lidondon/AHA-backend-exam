@@ -90,10 +90,7 @@ class Login extends BaseView {
     }
 
     onGoogleLoginFailure = (error) => {
-        if (error) {
-            console.log('onGoogleLoginFailure', error);
-            Modal.error({ title: stringEn.googleLoginFailure });
-        }
+        if (error) console.log('onGoogleLoginFailure', error);
     }
 
     render() {
