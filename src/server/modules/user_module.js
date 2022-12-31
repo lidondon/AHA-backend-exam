@@ -94,6 +94,7 @@ const updateUser = (newData, id) => {
 
 const sendVerifyingEmail = (url, user) => {
     return new Promise((resolve, reject) => {
+        console.log('sendVerifyingEmail', user);
         const message = {
             to: user.email,
             from: config.emailFrom,

@@ -536,6 +536,7 @@ const updateUser = (newData, id) => {
 
 const sendVerifyingEmail = (url, user) => {
     return new Promise((resolve, reject) => {
+        console.log('sendVerifyingEmail', user);
         const message = {
             to: user.email,
             from: __WEBPACK_IMPORTED_MODULE_2__config_config__["a" /* default */].emailFrom,
@@ -1103,7 +1104,8 @@ const get = (request, response) => {
 const post = (request, response) => {
     __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].createUser(request.body).then(result => {
         const url = verifyingEmailLink(request.headers.host);
-
+        console.log('new user id');
+        console.log(result);
         __WEBPACK_IMPORTED_MODULE_0__modules_user_module__["a" /* default */].sendVerifyingEmail(url, { id: result }).catch(error => {
             response.status(500).send(error);
         });
