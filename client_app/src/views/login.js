@@ -89,9 +89,12 @@ class Login extends BaseView {
         this.props.actions.googleLogin(profile.email, profile.name);
     }
 
-    // onGoogleLoginFailure = (error) => {
-    //     Modal.error({ title: stringEn.googleLoginFailure });
-    // }
+    onGoogleLoginFailure = (error) => {
+        if (error) {
+            console.log('onGoogleLoginFailure', error);
+            Modal.error({ title: stringEn.googleLoginFailure });
+        }
+    }
 
     render() {
         return (
@@ -104,7 +107,7 @@ class Login extends BaseView {
                             onLoginClick={this.onLoginClick}
                             onFbLoginCallback={this.onFbLoginCallback}
                             onGoogleLoginSuccess={this.onGoogleLoginSuccess}
-                            // onGoogleLoginFailure={this.onGoogleLoginFailure}
+                            onGoogleLoginFailure={this.onGoogleLoginFailure}
                             isAccountError={this.state.isAccountError}
                             isPasswordError={this.state.isPasswordError}/>
                     </div>
@@ -116,7 +119,7 @@ class Login extends BaseView {
 }
 
 const LoginBlock = props => {
-    const { onLoginClick, onFbLoginCallback, onGoogleLoginSuccess, handleAccountChanged, handlePasswordChanged, isAccountError, isPasswordError } = props;
+    const { onLoginClick, onFbLoginCallback, onGoogleLoginSuccess, onGoogleLoginFailure, handleAccountChanged, handlePasswordChanged, isAccountError, isPasswordError } = props;
 
     return (
         <div className='card'>
@@ -143,7 +146,7 @@ const LoginBlock = props => {
                             <GoogleLogin clientId={GOOGLE_CLIENT_ID}
                                 buttonText='Google login'
                                 onSuccess={onGoogleLoginSuccess}
-                                // onFailure={onGoogleLoginFailure}
+                                onFailure={onGoogleLoginFailure}
                                 cookiePolicy={'single_host_origin'} />
                         </Col>
                     </Row>
