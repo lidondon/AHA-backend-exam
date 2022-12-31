@@ -3,7 +3,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Row, Col, Button, Modal } from 'antd';
-import { GoogleLogin } from 'react-google-login';
+// import { GoogleLogin } from 'react-google-login';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleLogin, hasGrantedAllScopesGoogle } from '@react-oauth/google';
 import FacebookLogin from 'react-facebook-login';
 
 import { isLogin } from '../utilities/authentication';
@@ -83,8 +85,19 @@ class Login extends BaseView {
         this.props.actions.facebookLogin(response.email, response.name);
     }
 
+    parseGoogleToken = (token) => {
+        let base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    }
+
     onGoogleLoginSuccess = (response) => {
-        const profile = response.profileObj;
+        const profile = this.parseGoogleToken(response.credential);
+        console.log('profile', profile);
 
         this.props.actions.googleLogin(profile.email, profile.name);
     }
@@ -140,11 +153,15 @@ const LoginBlock = props => {
                 <div className='form-group'>
                     <Row>
                         <Col>
-                            <GoogleLogin clientId={GOOGLE_CLIENT_ID}
+                            {/* <GoogleLogin clientId={GOOGLE_CLIENT_ID}
                                 buttonText='Google login'
                                 onSuccess={onGoogleLoginSuccess}
                                 onFailure={onGoogleLoginFailure}
-                                cookiePolicy={'single_host_origin'} />
+                                cookiePolicy={'single_host_origin'} /> */}
+                            <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+                                <GoogleLogin onSuccess={onGoogleLoginSuccess} onError={onGoogleLoginFailure} />
+                            </GoogleOAuthProvider>
+
                         </Col>
                     </Row>
                 </div>
