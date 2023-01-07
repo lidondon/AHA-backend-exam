@@ -1,7 +1,12 @@
 import { getLoginData } from '../utilities/authentication';
+import { setLoginData } from '../utilities/authentication';
 
 const SIGN_UP = 'SIGN_UP';
 const SIGN_UP_URL = 'api/user';
+const GOOGLE_LOGIN = "GOOGLE_LOGIN";
+const GOOGLE_LOGIN_URL = "/api/login/google";
+const FACEBOOK_LOGIN = "FACEBOOK_LOGIN";
+const FACEBOOK_LOGIN_URL = "/api/login/facebook";
 
 const LOADING = 'LOADING';
 const SUCCESS = 'SUCCESS';
@@ -25,9 +30,39 @@ export const signUp = (email, password) => {
     };
 };
 
+export const googleLogin = (email, name) => {
+    return {
+        type: GOOGLE_LOGIN,
+        statuses: [ LOADING, SUCCESS, ERROR ],
+        method: "post",
+        baseUrl: AUTH_BASE_URL,
+        url: GOOGLE_LOGIN_URL,
+        params: {
+            email,
+            name
+        }
+    };
+};
+
+export const facebookLogin = (email, name) => {
+    return {
+        type: FACEBOOK_LOGIN,
+        statuses: [ LOADING, SUCCESS, ERROR ],
+        method: "post",
+        baseUrl: AUTH_BASE_URL,
+        url: FACEBOOK_LOGIN_URL,
+        params: {
+            email,
+            name
+        }
+    };
+};
+
 const reducer = (state = initialState, action) => {
     let resultCase = {
-        SIGN_UP: processSignUp
+        SIGN_UP: processSignUp,
+        GOOGLE_LOGIN: processLogin,
+        FACEBOOK_LOGIN: processLogin
     };
 
     return resultCase[action.type] ? resultCase[action.type](state, action) : state;
@@ -40,6 +75,19 @@ const processSignUp = (state, action) => {
 
     return result;
 }
+
+const processLogin = (state, action) => {
+    let error = assembleErrorMsg(LOGIN, action.error);
+    if (action.status === SUCCESS && action.payload) {
+        setLoginData(action.payload.data.token, action.payload.data.id, action.payload.data.email, action.payload.data.name, action.payload.data.hasVerified);
+    }
+
+    return {
+        ...state,
+        isLoading: action.isLoading,
+        error: error
+    };
+};
 
 const getBaseAxiosResult = (state, action) => {
     return {

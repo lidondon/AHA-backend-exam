@@ -3,9 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Row, Col, Button, Modal } from 'antd';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { GoogleLogin, hasGrantedAllScopesGoogle } from '@react-oauth/google';
-import FacebookLogin from 'react-facebook-login';
 
 import { isLogin } from '../utilities/authentication';
 import { isEmailFormat, isPasswordFormat } from '../utilities/util';
@@ -84,27 +81,6 @@ class Login extends BaseView {
         this.props.actions.facebookLogin(response.email, response.name);
     }
 
-    parseGoogleToken = (token) => {
-        let base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        return JSON.parse(jsonPayload);
-    }
-
-    onGoogleLoginSuccess = (response) => {
-        const profile = this.parseGoogleToken(response.credential);
-        console.log('profile', profile);
-
-        this.props.actions.googleLogin(profile.email, profile.name);
-    }
-
-    onGoogleLoginFailure = (error) => {
-        if (error) console.log('onGoogleLoginFailure', error);
-    }
-
     render() {
         return (
             <div className='container'>
@@ -114,9 +90,6 @@ class Login extends BaseView {
                         <LoginBlock handleAccountChanged={this.handleAccountChanged} 
                             handlePasswordChanged={this.handlePasswordChanged}
                             onLoginClick={this.onLoginClick}
-                            onFbLoginCallback={this.onFbLoginCallback}
-                            onGoogleLoginSuccess={this.onGoogleLoginSuccess}
-                            onGoogleLoginFailure={this.onGoogleLoginFailure}
                             isAccountError={this.state.isAccountError}
                             isPasswordError={this.state.isPasswordError}/>
                     </div>
@@ -128,7 +101,7 @@ class Login extends BaseView {
 }
 
 const LoginBlock = props => {
-    const { onLoginClick, onFbLoginCallback, onGoogleLoginSuccess, onGoogleLoginFailure, handleAccountChanged, handlePasswordChanged, isAccountError, isPasswordError } = props;
+    const { onLoginClick, handleAccountChanged, handlePasswordChanged, isAccountError, isPasswordError } = props;
 
     return (
         <div className='card'>
@@ -140,30 +113,7 @@ const LoginBlock = props => {
                 <div className='form-group'>
                     <Button block={true} onClick={onLoginClick}> Login </Button>
                 </div>
-                <div className='form-group'>
-                    <Row>
-                        <Col>
-                            <FacebookLogin appId={FACEBOOK_CLIENT_ID}
-                                fields='email, name'
-                                callback={onFbLoginCallback}/>
-                        </Col>
-                    </Row>
-                </div>
-                <div className='form-group'>
-                    <Row>
-                        <Col>
-                            {/* <GoogleLogin clientId={GOOGLE_CLIENT_ID}
-                                buttonText='Google login'
-                                onSuccess={onGoogleLoginSuccess}
-                                onFailure={onGoogleLoginFailure}
-                                cookiePolicy={'single_host_origin'} /> */}
-                            <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-                                <GoogleLogin onSuccess={onGoogleLoginSuccess} onError={onGoogleLoginFailure} />
-                            </GoogleOAuthProvider>
-
-                        </Col>
-                    </Row>
-                </div>
+                
             </article>
         </div>
     );

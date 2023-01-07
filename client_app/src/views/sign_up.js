@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Col, Button, Input, Modal } from 'antd';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
+import FacebookLogin from 'react-facebook-login';
+
 import Loading from '../components/shared/loading';
 import { isLogin } from '../utilities/authentication';
 import { isEmailFormat, isPasswordFormat } from '../utilities/util';
@@ -70,6 +74,26 @@ class SignUp extends BaseView {
         if (passwordFormatError === '' && emailFormatError === '' && confirmFailure === '') this.props.actions.signUp(email, password);
     }
     
+    parseGoogleToken = (token) => {
+        let base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    }
+
+    onGoogleLoginSuccess = (response) => {
+        const profile = this.parseGoogleToken(response.credential);
+        console.log('profile', profile);
+
+        this.props.actions.googleLogin(profile.email, profile.name);
+    }
+
+    onGoogleLoginFailure = (error) => {
+        if (error) console.log('onGoogleLoginFailure', error);
+    }
 
     render() {
         const { signUp } = this.props;
@@ -84,6 +108,9 @@ class SignUp extends BaseView {
                         <SignUpBlock onEmailChanged={this.onEmailChanged} 
                             onPasswordChanged={this.onPasswordChanged}
                             onPasswordConfirmChanged={this.onPasswordConfirmChanged}
+                            onFbLoginCallback={this.onFbLoginCallback}
+                            onGoogleLoginSuccess={this.onGoogleLoginSuccess}
+                            onGoogleLoginFailure={this.onGoogleLoginFailure}
                             onSignUpClick={this.onSignUpClick} />
                         <br />
                         <h6 style={{color: 'red'}}>{passwordFormatError}</h6>
@@ -100,7 +127,7 @@ class SignUp extends BaseView {
 }
 
 const SignUpBlock = props => {
-    const { onEmailChanged, onPasswordChanged, onPasswordConfirmChanged, onSignUpClick } = props;
+    const { onEmailChanged, onPasswordChanged, onPasswordConfirmChanged, onSignUpClick, onFbLoginCallback, onGoogleLoginSuccess, onGoogleLoginFailure } = props;
     
     return (
         <div className='card'>
@@ -128,6 +155,24 @@ const SignUpBlock = props => {
                 <Row>
                     <Col>
                         <Button block={true} type='primary' onClick={onSignUpClick}> Sign Up </Button>
+                    </Col>
+                </Row>
+                <br />
+                <Row>
+                    <Col>
+                        <FacebookLogin appId={FACEBOOK_CLIENT_ID}
+                            textButton='sign up with Facebook'
+                            fields='email, name'
+                            callback={onFbLoginCallback}/>
+                    </Col>
+                </Row>
+                <br />
+                <Row>
+                    <Col>
+                        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+                            <GoogleLogin text='signup_with' onSuccess={onGoogleLoginSuccess} onError={onGoogleLoginFailure} />
+                        </GoogleOAuthProvider>
+
                     </Col>
                 </Row>
             </article>
