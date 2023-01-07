@@ -74,6 +74,10 @@ class SignUp extends BaseView {
 
         if (passwordFormatError === '' && emailFormatError === '' && confirmFailure === '') this.props.actions.signUp(email, password);
     }
+
+    onFbLoginCallback = (response) => {
+        this.props.actions.facebookLogin(response.email, response.name);
+    }
     
     parseGoogleToken = (token) => {
         let base64Url = token.split('.')[1];
