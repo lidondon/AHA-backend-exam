@@ -1,6 +1,7 @@
-import { getLoginData } from '../utilities/authentication';
 import { setLoginData } from '../utilities/authentication';
+import { assembleErrorMsg } from '../utilities/util';
 
+const AUTH_BASE_URL = `https://${SERVER_HOST}`;
 const SIGN_UP = 'SIGN_UP';
 const SIGN_UP_URL = 'api/user';
 const GOOGLE_LOGIN = "GOOGLE_LOGIN";
@@ -77,7 +78,7 @@ const processSignUp = (state, action) => {
 }
 
 const processLogin = (state, action) => {
-    let error = assembleErrorMsg(LOGIN, action.error);
+    let error = assembleErrorMsg(SIGN_UP, action.error);
     if (action.status === SUCCESS && action.payload) {
         setLoginData(action.payload.data.token, action.payload.data.id, action.payload.data.email, action.payload.data.name, action.payload.data.hasVerified);
     }

@@ -35,6 +35,7 @@ class SignUp extends BaseView {
 
     componentWillUpdate(nextProps, nextState) {
         super.componentWillUpdate(nextProps, nextState);
+        if (isLogin()) this.handleAlreadyLogin();
         if (nextProps.signUp.isSuccess) {
             Modal.success({ title: '註冊成功，請重新登入！' });
             this.props.history.push("/");
@@ -161,7 +162,6 @@ const SignUpBlock = props => {
                 <Row>
                     <Col>
                         <FacebookLogin appId={FACEBOOK_CLIENT_ID}
-                            textButton='sign up with Facebook'
                             fields='email, name'
                             callback={onFbLoginCallback}/>
                     </Col>
